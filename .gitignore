@@ -1,0 +1,10 @@
+# Build files
+*.o
+*.elf
+*.hex
+*.bin
+*-workspace
+# Editor files
+.vscode/
+*.swp
+*~
