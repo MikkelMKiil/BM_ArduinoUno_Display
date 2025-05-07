@@ -7,7 +7,7 @@ AVRDUDE = sudo avrdude
 
 # Project specific
 TARGET = main
-SRC = $(TARGET).c
+SRC = main.c st7920.c  # Include st7920.c in the source list
 
 # MCU and CPU Frequency
 MCU_GCC = atmega328p
@@ -83,20 +83,20 @@ $(TARGET).hex: $(TARGET).elf
 	$(OBJCOPY) -O ihex -R .eeprom $< $@
 
 # Rule to build .elf from .o
-$(TARGET).elf: $(TARGET).o
+$(TARGET).elf: $(SRC:.c=.o)  # Link all object files
 	@echo "Linking: $@"
-	$(CC) -mmcu=$(MCU_GCC) $< -o $@
+	$(CC) -mmcu=$(MCU_GCC) $^ -o $@
 
 # Rule to build .o from .c
 # This uses the CFLAGS variable, which is set differently by the specific targets.
-$(TARGET).o: $(SRC)
+%.o: %.c
 	@echo "Compiling: $< with flags: $(CFLAGS)"
 	$(CC) $(CFLAGS) -c $< -o $@
 
 # Clean up generated files
 clean:
 	@echo "Cleaning up..."
-	rm -f $(TARGET).o $(TARGET).elf $(TARGET).hex
+	rm -f *.o $(TARGET).elf $(TARGET).hex
 	@echo "Cleanup complete."
 
 # Declare phony targets
